@@ -13,7 +13,7 @@ from depthNet_model import depthNet
 from visualize import *
 
 with open('sample_data.pkl', 'rb') as fp:
-    sample_datas = pickle.load(fp)
+    sample_datas = pickle.load(fp, encoding='latin1')  # SMG: I had to add the 'latin1' (numpy Python 2 -> 3 issue)
 
 # model
 depthnet = depthNet()
