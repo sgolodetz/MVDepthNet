@@ -12,12 +12,12 @@ from torch import Tensor
 from depthNet_model import depthNet
 from visualize import *
 
-with open('sample_data.pkl', 'rb') as fp:
+with open('C:/Users/Stuart Golodetz/Downloads/MVDepthNet/sample_data.pkl', 'rb') as fp:
     sample_datas = pickle.load(fp, encoding='latin1')  # SMG: I had to add the 'latin1' (numpy Python 2 -> 3 issue)
 
 # model
 depthnet = depthNet()
-model_data = torch.load('opensource_model.pth.tar')
+model_data = torch.load('C:/Users/Stuart Golodetz/Downloads/MVDepthNet/opensource_model.pth.tar')
 depthnet.load_state_dict(model_data['state_dict'])
 depthnet = depthnet.cuda()
 cudnn.benchmark = True
@@ -36,13 +36,13 @@ for this_sample in sample_datas:
 
     # get data
     depth_image_cuda = Tensor(this_sample['depth_image']).cuda()
-    depth_image_cuda = Variable(depth_image_cuda, volatile=True)
+    # depth_image_cuda = Variable(depth_image_cuda, volatile=True)
 
     left_image_cuda = Tensor(this_sample['left_image']).cuda()
-    left_image_cuda = Variable(left_image_cuda, volatile=True)
+    # left_image_cuda = Variable(left_image_cuda, volatile=True)
 
     right_image_cuda = Tensor(this_sample['right_image']).cuda()
-    right_image_cuda = Variable(right_image_cuda, volatile=True)
+    # right_image_cuda = Variable(right_image_cuda, volatile=True)
 
     left_in_right_T = this_sample['left2right'][0:3, 3]
     left_in_right_R = this_sample['left2right'][0:3, 0:3]
