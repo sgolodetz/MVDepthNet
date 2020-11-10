@@ -15,7 +15,7 @@ from visualize import *
 
 # model
 depthnet = depthNet()
-model_data = torch.load('opensource_model.pth.tar')
+model_data = torch.load('C:/Users/Stuart Golodetz/Downloads/MVDepthNet/opensource_model.pth.tar')
 depthnet.load_state_dict(model_data['state_dict'])
 depthnet = depthnet.cuda()
 cudnn.benchmark = True
@@ -29,30 +29,44 @@ pixel_coordinate = np.reshape(pixel_coordinate, [3, -1])
 
 # HERE is what you should provide
 left_image = cv2.imread(
-    "/home/wang/dataset/tum_rgbd/train/rgbd_dataset_freiburg1_xyz/rgb/1305031102.175304.png"
+    # "/home/wang/dataset/tum_rgbd/train/rgbd_dataset_freiburg1_xyz/rgb/1305031102.175304.png"
+    "C:/spaint/build/bin/apps/spaintgui/sequences/Teddy/frame-000000.color.png"
 )
 right_image = cv2.imread(
-    "/home/wang/dataset/tum_rgbd/train/rgbd_dataset_freiburg1_xyz/rgb/1305031102.275326.png"
+    # "/home/wang/dataset/tum_rgbd/train/rgbd_dataset_freiburg1_xyz/rgb/1305031102.275326.png"
+    "C:/spaint/build/bin/apps/spaintgui/sequences/Teddy/frame-000050.color.png"
 )
-left_pose = np.asarray([
-    [0.07543147, 0.61393189, -0.78574661, 1.3405],
-    [0.9970987, -0.03837025, 0.06574118, 0.6266],
-    [0.01021131, -0.78842588, -0.61504501, 1.6575],
-    [0, 0, 0, 1]])
+left_pose = np.eye(4)
+    # np.asarray([
+    # [0.07543147, 0.61393189, -0.78574661, 1.3405],
+    # [0.9970987, -0.03837025, 0.06574118, 0.6266],
+    # [0.01021131, -0.78842588, -0.61504501, 1.6575],
+    # [0, 0, 0, 1]])
 
-right_pose = np.asarray(
-    [[6.40527011e-02, 6.40832173e-01, -7.65004168e-01, 1.3160],
-    [9.97946496e-01, -4.09736058e-02, 4.92336713e-02, 0.6254],
-    [2.05541383e-04, -7.66586779e-01, -6.42140692e-01, 1.6196],
-    [0, 0, 0, 1]])
+right_pose = np.array([
+    [0.994802, 0.0166392, 0.100461, -0.0844009],
+    [-0.0250872, 0.996198, 0.083425, -0.0346446],
+    [-0.0986906, -0.0855116, 0.991437, 0.0318293],
+    [0, 0, -0, 1]
+])
+    # np.asarray(
+    # [[6.40527011e-02, 6.40832173e-01, -7.65004168e-01, 1.3160],
+    # [9.97946496e-01, -4.09736058e-02, 4.92336713e-02, 0.6254],
+    # [2.05541383e-04, -7.66586779e-01, -6.42140692e-01, 1.6196],
+    # [0, 0, 0, 1]])
 
-camera_k = np.asarray([ [525.0, 0, 319.5],
-                        [0, 525.0, 239.5],
-                        [0, 0, 1]])
+camera_k = np.array([
+    [504.261, 0, 352.457],
+    [0, 503.905, 272.202],
+    [0, 0, 1]
+])
+    # np.asarray([ [525.0, 0, 319.5],
+    #                     [0, 525.0, 239.5],
+    #                     [0, 0, 1]])
 
 # test the epipolar line
 left2right = np.dot(inv(right_pose), left_pose)
-test_point = np.asarray([left_image.shape[1] / 2, left_image.shape[0] / 2, 1])
+test_point = np.asarray([left_image.shape[1] // 2, left_image.shape[0] // 2, 1])
 far_point = np.dot(inv(camera_k), test_point) * 50.0
 far_point = np.append(far_point, 1)
 far_point = np.dot(left2right, far_point)
@@ -89,10 +103,10 @@ torch_right_image = (torch_right_image - 81.0) / 35.0
 
 # process
 left_image_cuda = Tensor(torch_left_image).cuda()
-left_image_cuda = Variable(left_image_cuda, volatile=True)
+# left_image_cuda = Variable(left_image_cuda, volatile=True)
 
 right_image_cuda = Tensor(torch_right_image).cuda()
-right_image_cuda = Variable(right_image_cuda, volatile=True)
+# right_image_cuda = Variable(right_image_cuda, volatile=True)
 
 left_in_right_T = left2right[0:3, 3]
 left_in_right_R = left2right[0:3, 0:3]
