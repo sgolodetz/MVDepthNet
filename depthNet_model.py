@@ -168,7 +168,10 @@ class depthNet(nn.Module):
     def forward(self, left_image, right_image, KRKiUV_T, KT_T):
         plane_sweep_volume = self.getVolume(left_image, right_image, KRKiUV_T, KT_T)
         # left_image *= 0.0
-        x = torch.cat((left_image, plane_sweep_volume), 1)
+        return self.predictDepths(left_image, plane_sweep_volume)
+
+    def predictDepths(self, reference_image, plane_sweep_volume):
+        x = torch.cat((reference_image, plane_sweep_volume), 1)
 
         conv1 = self.conv1(x)
         conv2 = self.conv2(conv1)
